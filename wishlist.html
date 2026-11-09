@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wishlist | Lehgamoh</title>
+<meta name="description" content="Your saved Lehgamoh favourites, ready to move into your shopping bag.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" href="logo.png">
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { brand: '#800000', gold: '#D4AF37' },
+  fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Poppins', 'sans-serif'] }
+} } }
+</script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 flex flex-col min-h-screen">
+
+<div id="navbar-placeholder"></div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+  <div class="mb-8">
+    <p class="text-xs text-gray-400 mb-2"><a href="index.html" class="hover:text-brand">Home</a> / Wishlist</p>
+    <h1 class="text-3xl md:text-4xl font-serif text-gray-900">My Wishlist</h1>
+  </div>
+  <div id="wishlist-wrap"></div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+
+function renderWishlistPage() {
+  var wrap = document.getElementById('wishlist-wrap');
+  var ids = getWishlist();
+  var list = ids.map(function (id) { return getProductById(id); }).filter(Boolean);
+
+  if (!list.length) {
+    wrap.innerHTML =
+      '<div class="bg-white rounded-xl shadow-sm p-16 text-center">' +
+      '<i class="fa-regular fa-heart text-5xl text-gray-300 mb-4"></i>' +
+      '<p class="text-gray-500 text-lg mb-1">Your wishlist is empty.</p>' +
+      '<p class="text-gray-400 text-sm mb-6">Tap the heart on any product to save it here.</p>' +
+      '<a href="shop.html" class="inline-block bg-brand text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#5a0000]">Explore Collection</a>' +
+      '</div>';
+    return;
+  }
+
+  wrap.innerHTML = '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">' +
+    list.map(function (p) {
+      return '<article class="bg-white rounded-xl shadow-sm overflow-hidden card-hover">' +
+        '<div class="relative h-80 overflow-hidden">' +
+        '<a href="product.html?id=' + p.id + '"><img src="' + p.image + '" alt="' + escapeHtml(p.name) + '" class="w-full h-80 object-cover" onerror="this.src=\'https://via.placeholder.com/400x600\'"></a>' +
+        '<button onclick="removeWish(' + p.id + ')" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center text-brand shadow" aria-label="Remove"><i class="fa-solid fa-heart"></i></button>' +
+        '</div>' +
+        '<div class="p-4 text-center">' +
+        '<p class="text-[10px] uppercase tracking-widest text-gold font-semibold mb-1">' + p.categoryLabel + '</p>' +
+        '<a href="product.html?id=' + p.id + '" class="block text-sm font-semibold hover:text-brand truncate">' + escapeHtml(p.name) + '</a>' +
+        '<p class="text-brand font-bold mt-1.5">' + formatPrice(p.price) + '</p>' +
+        '<button onclick="moveWishToCart(' + p.id + ')" class="mt-3 w-full bg-gray-900 text-white py-2.5 rounded-lg text-xs font-semibold tracking-wider uppercase hover:bg-brand transition"><i class="fa-solid fa-bag-shopping mr-1"></i>Move to Bag</button>' +
+        '</div></article>';
+    }).join('') + '</div>';
+}
+
+function removeWish(id) {
+  var list = getWishlist().filter(function (x) { return Number(x) !== Number(id); });
+  saveWishlist(list);
+  renderWishlistPage();
+  toast('Removed from wishlist', 'info');
+}
+
+function moveWishToCart(id) {
+  addToCart(id);
+  removeWish(id);
+}
+
+document.addEventListener('DOMContentLoaded', renderWishlistPage);
+
+</script>
+</body>
+</html>

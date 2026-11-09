@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account | Lehgamoh</title>
+<meta name="description" content="Your Lehgamoh account dashboard — orders, wishlist, addresses and more.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" href="logo.png">
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { brand: '#800000', gold: '#D4AF37' },
+  fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Poppins', 'sans-serif'] }
+} } }
+</script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 flex flex-col min-h-screen">
+
+<div id="navbar-placeholder"></div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+  <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8 mb-8 flex flex-col sm:flex-row items-center gap-6">
+    <div id="ac-initial" class="w-20 h-20 rounded-full bg-brand text-white flex items-center justify-center text-3xl font-serif font-bold">L</div>
+    <div class="flex-1 text-center sm:text-left">
+      <p class="text-xs uppercase tracking-widest text-gold font-semibold mb-1">My Account</p>
+      <h1 id="ac-name" class="text-2xl md:text-3xl font-serif font-bold text-gray-900">Guest</h1>
+      <p id="ac-email" class="text-gray-500 text-sm mt-1"></p>
+    </div>
+    <button onclick="logout()" class="border border-gray-300 text-gray-700 px-6 py-2.5 rounded-lg text-sm font-semibold hover:border-brand hover:text-brand"><i class="fa-solid fa-right-from-bracket mr-2"></i>Logout</button>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="bg-white rounded-xl shadow-sm p-5 text-center">
+      <p class="text-3xl font-serif font-bold text-brand" id="stat-orders">0</p>
+      <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Orders</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-5 text-center">
+      <p class="text-3xl font-serif font-bold text-brand" id="stat-wishlist">0</p>
+      <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Wishlist Items</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-5 text-center">
+      <p class="text-3xl font-serif font-bold text-brand" id="stat-cart">0</p>
+      <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Items in Bag</p>
+    </div>
+  </div>
+
+  <h2 class="text-xl font-serif font-bold mb-4">My Dashboard</h2>
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <a href="orders.html" class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition group text-center">
+      <i class="fa-solid fa-box text-2xl text-brand mb-3 block group-hover:scale-110 transition"></i>
+      <p class="text-sm font-semibold">My Orders</p>
+    </a>
+    <a href="track-order.html" class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition group text-center">
+      <i class="fa-solid fa-truck-fast text-2xl text-brand mb-3 block group-hover:scale-110 transition"></i>
+      <p class="text-sm font-semibold">Track Order</p>
+    </a>
+    <a href="wishlist.html" class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition group text-center">
+      <i class="fa-regular fa-heart text-2xl text-brand mb-3 block group-hover:scale-110 transition"></i>
+      <p class="text-sm font-semibold">Wishlist</p>
+    </a>
+    <a href="address.html" class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition group text-center">
+      <i class="fa-solid fa-location-dot text-2xl text-brand mb-3 block group-hover:scale-110 transition"></i>
+      <p class="text-sm font-semibold">Saved Addresses</p>
+    </a>
+    <a href="payment-methods.html" class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition group text-center">
+      <i class="fa-regular fa-credit-card text-2xl text-brand mb-3 block group-hover:scale-110 transition"></i>
+      <p class="text-sm font-semibold">Payment Methods</p>
+    </a>
+    <a href="cart.html" class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition group text-center">
+      <i class="fa-solid fa-bag-shopping text-2xl text-brand mb-3 block group-hover:scale-110 transition"></i>
+      <p class="text-sm font-semibold">My Bag</p>
+    </a>
+    <a href="size-guide.html" class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition group text-center">
+      <i class="fa-solid fa-ruler-combined text-2xl text-brand mb-3 block group-hover:scale-110 transition"></i>
+      <p class="text-sm font-semibold">Size Guide</p>
+    </a>
+    <a href="contact.html" class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition group text-center">
+      <i class="fa-solid fa-headset text-2xl text-brand mb-3 block group-hover:scale-110 transition"></i>
+      <p class="text-sm font-semibold">Help & Support</p>
+    </a>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+
+(function () {
+  var user = getUser();
+  if (!user) {
+    window.location.href = 'login.html?redirect=account.html';
+    return;
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('ac-name').textContent = user.name || 'User';
+    document.getElementById('ac-email').textContent = user.email || '';
+    document.getElementById('ac-initial').textContent = (user.name || 'L').charAt(0).toUpperCase();
+    document.getElementById('stat-orders').textContent = readJSON(LGH.orders, []).length;
+    document.getElementById('stat-wishlist').textContent = getWishlist().length;
+    document.getElementById('stat-cart').textContent = cartCount();
+  });
+})();
+
+</script>
+</body>
+</html>

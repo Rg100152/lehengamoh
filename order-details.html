@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Details | Lehgamoh</title>
+<meta name="description" content="View the details of a specific Lehgamoh order.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" href="logo.png">
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { brand: '#800000', gold: '#D4AF37' },
+  fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Poppins', 'sans-serif'] }
+} } }
+</script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 flex flex-col min-h-screen">
+
+<div id="navbar-placeholder"></div>
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+  <div class="mb-8">
+    <p class="text-xs text-gray-400 mb-2"><a href="account.html" class="hover:text-brand">My Account</a> / <a href="orders.html" class="hover:text-brand">Orders</a> / Details</p>
+    <h1 class="text-3xl md:text-4xl font-serif text-gray-900">Order Details</h1>
+  </div>
+  <div id="od-wrap"></div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+
+var STEPS = ['Placed', 'Dispatched', 'Out for Delivery', 'Delivered'];
+
+function renderOrderDetails() {
+  var wrap = document.getElementById('od-wrap');
+  var id = new URLSearchParams(window.location.search).get('id');
+  var orders = readJSON(LGH.orders, []);
+  var order = orders.find(function (o) { return o.id === id; });
+
+  if (!order) {
+    wrap.innerHTML =
+      '<div class="bg-white rounded-xl shadow-sm p-16 text-center">' +
+      '<i class="fa-solid fa-circle-exclamation text-4xl text-brand mb-4"></i>' +
+      '<p class="text-gray-600 text-lg mb-6">Order not found.</p>' +
+      '<a href="orders.html" class="inline-block bg-brand text-white px-7 py-3 rounded-lg font-semibold hover:bg-[#5a0000]">Back to Orders</a></div>';
+    return;
+  }
+
+  var stepIndex = Math.max(0, STEPS.indexOf(order.status));
+  var timeline = STEPS.map(function (step, i) {
+    var done = i <= stepIndex;
+    return '<div class="flex-1 text-center relative">' +
+      '<div class="w-8 h-8 rounded-full mx-auto flex items-center justify-center text-xs ' + (done ? 'bg-brand text-white' : 'bg-gray-200 text-gray-500') + '">' + (done ? '<i class="fa-solid fa-check"></i>' : (i + 1)) + '</div>' +
+      '<p class="text-[10px] mt-2 ' + (done ? 'text-brand font-semibold' : 'text-gray-400') + '">' + step + '</p>' +
+      '</div>';
+  }).join('');
+
+  var items = order.items.map(function (item) {
+    return '<div class="flex items-center gap-4 py-4 border-b last:border-0">' +
+      '<img src="' + item.image + '" alt="' + escapeHtml(item.name) + '" class="w-16 h-20 object-cover rounded" onerror="this.src=\'https://via.placeholder.com/70x90\'">' +
+      '<div class="flex-1"><a href="product.html?id=' + item.id + '" class="font-semibold text-sm hover:text-brand">' + escapeHtml(item.name) + '</a><p class="text-xs text-gray-500 mt-0.5">Size ' + escapeHtml(item.size) + ' × ' + item.quantity + '</p></div>' +
+      '<span class="font-semibold text-sm">' + formatPrice(item.price * item.quantity) + '</span></div>';
+  }).join('');
+
+  wrap.innerHTML =
+    '<div class="bg-white rounded-xl shadow-sm p-6 mb-5">' +
+    '<div class="flex flex-wrap items-center justify-between gap-3 mb-6">' +
+    '<div><p class="font-serif text-xl font-bold">' + order.id + '</p><p class="text-xs text-gray-500">Placed on ' + order.date + ' • ' + order.payment + '</p></div>' +
+    '<span class="text-xs font-semibold px-3 py-1 rounded-full bg-brand/10 text-brand">' + order.status + '</span>' +
+    '</div>' +
+    '<div class="flex gap-1 mb-2">' + timeline + '</div>' +
+    '</div>' +
+    '<div class="grid grid-cols-1 lg:grid-cols-3 gap-5">' +
+    '<div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6"><h2 class="font-semibold mb-2">Items</h2>' + items + '</div>' +
+    '<div class="space-y-5">' +
+    '<div class="bg-white rounded-xl shadow-sm p-6"><h2 class="font-semibold mb-3">Shipping Address</h2>' +
+    '<p class="text-sm font-medium">' + escapeHtml(order.customer.name) + '</p>' +
+    '<p class="text-sm text-gray-500 mt-1">' + escapeHtml(order.customer.address) + '<br>' + escapeHtml(order.customer.city) + ', ' + escapeHtml(order.customer.state) + ' - ' + escapeHtml(order.customer.pincode) + '<br>' + escapeHtml(order.customer.phone) + '</p></div>' +
+    '<div class="bg-white rounded-xl shadow-sm p-6"><h2 class="font-semibold mb-3">Payment Summary</h2>' +
+    '<div class="flex justify-between text-sm mb-1"><span class="text-gray-500">Subtotal</span><span>' + formatPrice(order.subtotal) + '</span></div>' +
+    (order.discount ? '<div class="flex justify-between text-sm mb-1 text-emerald-600"><span>Discount</span><span>−' + formatPrice(order.discount) + '</span></div>' : '') +
+    '<div class="flex justify-between text-sm mb-3"><span class="text-gray-500">Shipping</span><span>' + (order.shipping === 0 ? 'FREE' : formatPrice(order.shipping)) + '</span></div>' +
+    '<div class="flex justify-between font-bold border-t pt-2"><span>Total</span><span class="text-brand">' + formatPrice(order.total) + '</span></div></div>' +
+    '</div></div>';
+}
+
+(function () {
+  if (!getUser()) {
+    window.location.href = 'login.html?redirect=order-details.html' + window.location.search;
+    return;
+  }
+  document.addEventListener('DOMContentLoaded', renderOrderDetails);
+})();
+
+</script>
+</body>
+</html>

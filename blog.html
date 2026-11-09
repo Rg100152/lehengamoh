@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journal | Lehgamoh</title>
+<meta name="description" content="The Lehgamoh Journal — bridal styling tips, fabric care and craft stories.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" href="logo.png">
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { brand: '#800000', gold: '#D4AF37' },
+  fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Poppins', 'sans-serif'] }
+} } }
+</script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 flex flex-col min-h-screen">
+
+<div id="navbar-placeholder"></div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 w-full">
+  <div class="text-center mb-10" data-aos="fade-up">
+    <p class="text-gold tracking-[0.25em] text-xs font-semibold uppercase mb-3">The Lehgamoh Journal</p>
+    <h1 class="text-4xl font-serif text-gray-900">Stories, Style &amp; Craft</h1>
+    <p class="text-gray-500 mt-2 text-sm">Notes on bridal styling, fabric care and the traditions behind our craft.</p>
+  </div>
+  <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+  var grid = document.getElementById('blog-grid');
+  grid.innerHTML = blogs.map(function (blog) {
+    return '<article class="bg-white rounded-xl shadow-sm overflow-hidden card-hover" data-aos="fade-up">' +
+      '<a href="blog-post.html?id=' + blog.id + '" class="block h-56 overflow-hidden"><img src="' + blog.image + '" alt="' + escapeHtml(blog.title) + '" class="w-full h-56 object-cover hover:scale-105 transition duration-700" onerror="this.src=\'https://via.placeholder.com/600x400\'"></a>' +
+      '<div class="p-5">' +
+      '<p class="text-xs text-gray-400 mb-2">' + blog.date + ' • ' + escapeHtml(blog.author) + '</p>' +
+      '<h2 class="text-lg font-serif font-semibold mb-2 leading-snug"><a href="blog-post.html?id=' + blog.id + '" class="hover:text-brand">' + escapeHtml(blog.title) + '</a></h2>' +
+      '<p class="text-sm text-gray-500 line-clamp-3 mb-4">' + escapeHtml(blog.excerpt) + '</p>' +
+      '<a href="blog-post.html?id=' + blog.id + '" class="text-sm font-semibold text-brand hover:underline">Read More <i class="fa-solid fa-arrow-right text-xs"></i></a>' +
+      '</div></article>';
+  }).join('');
+  if (window.AOS) AOS.refresh();
+});
+
+</script>
+</body>
+</html>

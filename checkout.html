@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout | Lehgamoh</title>
+<meta name="description" content="Complete your Lehgamoh order with our secure and simple demo checkout.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" href="logo.png">
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { brand: '#800000', gold: '#D4AF37' },
+  fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Poppins', 'sans-serif'] }
+} } }
+</script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 flex flex-col min-h-screen">
+
+<div id="navbar-placeholder"></div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+  <div class="mb-8">
+    <p class="text-xs text-gray-400 mb-2"><a href="index.html" class="hover:text-brand">Home</a> / <a href="cart.html" class="hover:text-brand">Cart</a> / Checkout</p>
+    <h1 class="text-3xl md:text-4xl font-serif text-gray-900">Checkout</h1>
+  </div>
+
+  <div id="checkout-empty" class="hidden bg-white rounded-xl shadow-sm p-12 text-center">
+    <i class="fa-solid fa-bag-shopping text-5xl text-gray-300 mb-4"></i>
+    <p class="text-gray-500 text-lg mb-6">Your bag is empty. Add something beautiful first.</p>
+    <a href="shop.html" class="inline-block bg-brand text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#5a0000]">Shop Now</a>
+  </div>
+
+  <div id="checkout-wrap" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <form id="checkout-form" class="lg:col-span-2 space-y-6">
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-serif font-bold mb-5 flex items-center gap-2"><i class="fa-solid fa-location-dot text-brand"></i> Shipping Details</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+            <input id="co-name" required type="text" placeholder="Your full name" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:border-brand">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+            <input id="co-email" required type="email" placeholder="you@example.com" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:border-brand">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+            <input id="co-phone" required type="tel" maxlength="10" placeholder="10-digit mobile number" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:border-brand">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Address *</label>
+            <textarea id="co-address" required rows="2" placeholder="House no., street, area" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:border-brand"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">City *</label>
+            <input id="co-city" required type="text" placeholder="City" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:border-brand">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">State *</label>
+            <input id="co-state" required type="text" placeholder="State" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:border-brand">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Pincode *</label>
+            <input id="co-pincode" required type="text" maxlength="6" placeholder="6-digit pincode" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:border-brand">
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-serif font-bold mb-5 flex items-center gap-2"><i class="fa-solid fa-credit-card text-brand"></i> Payment Method</h2>
+        <div class="space-y-3">
+          <label class="flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer hover:border-brand"><input type="radio" name="payment" value="Cash on Delivery" checked class="accent-brand"> <span class="text-sm">Cash on Delivery</span></label>
+          <label class="flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer hover:border-brand"><input type="radio" name="payment" value="Credit / Debit Card" class="accent-brand"> <span class="text-sm">Credit / Debit Card</span></label>
+          <label class="flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer hover:border-brand"><input type="radio" name="payment" value="UPI" class="accent-brand"> <span class="text-sm">UPI</span></label>
+        </div>
+        <p class="text-xs text-gray-400 mt-4"><i class="fa-solid fa-circle-info mr-1"></i> This is a demo checkout. No real payment will be charged.</p>
+        <label class="flex items-center gap-2 text-sm text-gray-600 mt-4"><input type="checkbox" required class="accent-brand"> I agree to the <a href="terms-conditions.html" class="text-brand hover:underline">Terms &amp; Conditions</a></label>
+      </div>
+
+      <button type="submit" class="w-full bg-brand text-white py-4 rounded-lg font-bold text-lg hover:bg-[#5a0000] transition shadow-lg"><i class="fa-solid fa-lock mr-2"></i>Place Order</button>
+    </form>
+
+    <aside class="bg-white rounded-xl shadow-sm p-6 h-fit sticky top-28">
+      <h2 class="text-lg font-serif font-bold mb-5 pb-3 border-b">Order Summary</h2>
+      <div id="summary-items" class="space-y-4 mb-5 max-h-72 overflow-y-auto"></div>
+      <div class="flex justify-between text-sm mb-2"><span class="text-gray-600">Subtotal</span><span id="co-subtotal">₹0</span></div>
+      <div id="co-discount-row" class="flex justify-between text-sm mb-2 hidden"><span class="text-gray-600">Discount</span><span id="co-discount" class="text-emerald-600">−₹0</span></div>
+      <div class="flex justify-between text-sm mb-4"><span class="text-gray-600">Shipping</span><span id="co-shipping">₹0</span></div>
+      <div class="border-t pt-3 flex justify-between items-center text-lg font-bold"><span>Total</span><span id="co-total" class="text-brand">₹0</span></div>
+      <p class="text-xs text-gray-400 mt-4"><i class="fa-solid fa-truck-fast mr-1"></i> Free shipping on orders above ₹5,000.</p>
+    </aside>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+
+function orderTotals() {
+  var subtotal = cartSubtotal();
+  var rate = Number(localStorage.getItem('lehgamoh_coupon') || 0) / 100;
+  var discount = Math.round(subtotal * rate);
+  var shipping = subtotal >= 5000 ? 0 : 199;
+  return { subtotal: subtotal, discount: discount, shipping: shipping, total: subtotal - discount + shipping };
+}
+
+function renderCheckout() {
+  var cart = getCart();
+  var wrap = document.getElementById('checkout-wrap');
+  var empty = document.getElementById('checkout-empty');
+
+  if (!cart.length) {
+    wrap.classList.add('hidden');
+    empty.classList.remove('hidden');
+    return;
+  }
+
+  var items = document.getElementById('summary-items');
+  items.innerHTML = cart.map(function (item) {
+    return '<div class="flex items-center gap-3">' +
+      '<img src="' + item.image + '" alt="' + escapeHtml(item.name) + '" class="w-12 h-16 object-cover rounded" onerror="this.src=\'https://via.placeholder.com/60x80\'">' +
+      '<div class="flex-1 min-w-0"><p class="text-sm font-medium truncate">' + escapeHtml(item.name) + '</p><p class="text-xs text-gray-500">Size ' + escapeHtml(item.size) + ' × ' + item.quantity + '</p></div>' +
+      '<span class="text-sm font-semibold">' + formatPrice(item.price * item.quantity) + '</span>' +
+      '</div>';
+  }).join('');
+
+  var t = orderTotals();
+  document.getElementById('co-subtotal').textContent = formatPrice(t.subtotal);
+  document.getElementById('co-shipping').textContent = t.shipping === 0 ? 'FREE' : formatPrice(t.shipping);
+  document.getElementById('co-total').textContent = formatPrice(t.total);
+  if (t.discount > 0) {
+    document.getElementById('co-discount-row').classList.remove('hidden');
+    document.getElementById('co-discount').textContent = '−' + formatPrice(t.discount);
+  } else {
+    document.getElementById('co-discount-row').classList.add('hidden');
+  }
+
+  var user = getUser();
+  if (user) {
+    document.getElementById('co-name').value = user.name || '';
+    document.getElementById('co-email').value = user.email || '';
+  }
+}
+
+function placeOrder(event) {
+  event.preventDefault();
+  var cart = getCart();
+  if (!cart.length) {
+    toast('Your cart is empty', 'error');
+    return;
+  }
+
+  var form = document.getElementById('checkout-form');
+  var phone = document.getElementById('co-phone').value.trim();
+  var pincode = document.getElementById('co-pincode').value.trim();
+
+  if (!/^[0-9]{10}$/.test(phone)) {
+    toast('Please enter a valid 10-digit phone number', 'error');
+    return;
+  }
+  if (!/^[0-9]{6}$/.test(pincode)) {
+    toast('Please enter a valid 6-digit pincode', 'error');
+    return;
+  }
+
+  var t = orderTotals();
+  var payment = form.querySelector('input[name="payment"]:checked').value;
+  var orderId = 'ORD' + String(Date.now()).slice(-8);
+
+  var order = {
+    id: orderId,
+    date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+    items: cart,
+    subtotal: t.subtotal,
+    discount: t.discount,
+    shipping: t.shipping,
+    total: t.total,
+    status: 'Placed',
+    payment: payment,
+    customer: {
+      name: document.getElementById('co-name').value.trim(),
+      email: document.getElementById('co-email').value.trim(),
+      phone: phone,
+      address: document.getElementById('co-address').value.trim(),
+      city: document.getElementById('co-city').value.trim(),
+      state: document.getElementById('co-state').value.trim(),
+      pincode: pincode
+    }
+  };
+
+  var orders = readJSON(LGH.orders, []);
+  orders.unshift(order);
+  writeJSON(LGH.orders, orders);
+
+  clearCart();
+  localStorage.removeItem('lehgamoh_coupon');
+  toast('Order placed successfully!', 'success');
+  setTimeout(function () {
+    window.location.href = 'thank-you.html?order=' + orderId;
+  }, 600);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  renderCheckout();
+  document.getElementById('checkout-form').addEventListener('submit', placeOrder);
+});
+
+</script>
+</body>
+</html>

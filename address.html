@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saved Addresses | Lehgamoh</title>
+<meta name="description" content="Manage your saved delivery addresses at Lehgamoh.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" href="logo.png">
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { brand: '#800000', gold: '#D4AF37' },
+  fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Poppins', 'sans-serif'] }
+} } }
+</script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 flex flex-col min-h-screen">
+
+<div id="navbar-placeholder"></div>
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+  <div class="mb-8">
+    <p class="text-xs text-gray-400 mb-2"><a href="account.html" class="hover:text-brand">My Account</a> / Addresses</p>
+    <h1 class="text-3xl md:text-4xl font-serif text-gray-900">Saved Addresses</h1>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div>
+      <div id="address-list" class="space-y-4"></div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-6 h-fit">
+      <h2 class="text-lg font-serif font-bold mb-4">Add New Address</h2>
+      <form id="address-form" onsubmit="saveAddress(event)" class="space-y-3">
+        <input id="ad-name" required type="text" placeholder="Full name" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:border-brand">
+        <input id="ad-phone" required type="tel" maxlength="10" placeholder="10-digit phone" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:border-brand">
+        <textarea id="ad-line" required rows="2" placeholder="House no., street, area" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:border-brand"></textarea>
+        <div class="grid grid-cols-2 gap-3">
+          <input id="ad-city" required type="text" placeholder="City" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:border-brand">
+          <input id="ad-state" required type="text" placeholder="State" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:border-brand">
+        </div>
+        <input id="ad-pincode" required type="text" maxlength="6" placeholder="6-digit pincode" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:border-brand">
+        <button type="submit" class="w-full bg-brand text-white py-3 rounded-lg text-sm font-semibold hover:bg-[#5a0000]">Save Address</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+
+function renderAddresses() {
+  var list = readJSON(LGH.addresses, []);
+  var wrap = document.getElementById('address-list');
+
+  if (!list.length) {
+    wrap.innerHTML = '<div class="bg-white rounded-xl shadow-sm p-10 text-center"><i class="fa-solid fa-location-dot text-4xl text-gray-300 mb-3"></i><p class="text-gray-500 text-sm">No saved addresses yet. Add your first address using the form.</p></div>';
+    return;
+  }
+
+  wrap.innerHTML = list.map(function (a) {
+    return '<div class="bg-white rounded-xl shadow-sm p-5">' +
+      '<div class="flex justify-between items-start gap-3">' +
+      '<div><p class="font-semibold text-gray-900">' + escapeHtml(a.name) + (a.isDefault ? ' <span class="text-[10px] bg-brand/10 text-brand px-2 py-0.5 rounded-full ml-1">Default</span>' : '') + '</p>' +
+      '<p class="text-sm text-gray-500 mt-1">' + escapeHtml(a.line) + '<br>' + escapeHtml(a.city) + ', ' + escapeHtml(a.state) + ' - ' + escapeHtml(a.pincode) + '<br>' + escapeHtml(a.phone) + '</p></div>' +
+      '<button onclick="deleteAddress(' + a.id + ')" class="text-gray-400 hover:text-red-600" aria-label="Delete"><i class="fa-solid fa-trash"></i></button>' +
+      '</div>' +
+      '<button onclick="setDefaultAddress(' + a.id + ')" class="mt-3 text-xs text-brand hover:underline">Set as default</button>' +
+      '</div>';
+  }).join('');
+}
+
+function saveAddress(event) {
+  event.preventDefault();
+  var phone = document.getElementById('ad-phone').value.trim();
+  var pincode = document.getElementById('ad-pincode').value.trim();
+  if (!/^[0-9]{10}$/.test(phone)) { toast('Enter a valid 10-digit phone number', 'error'); return; }
+  if (!/^[0-9]{6}$/.test(pincode)) { toast('Enter a valid 6-digit pincode', 'error'); return; }
+
+  var list = readJSON(LGH.addresses, []);
+  list.push({
+    id: Date.now(),
+    name: document.getElementById('ad-name').value.trim(),
+    phone: phone,
+    line: document.getElementById('ad-line').value.trim(),
+    city: document.getElementById('ad-city').value.trim(),
+    state: document.getElementById('ad-state').value.trim(),
+    pincode: pincode,
+    isDefault: list.length === 0
+  });
+  writeJSON(LGH.addresses, list);
+  event.target.reset();
+  toast('Address saved', 'success');
+  renderAddresses();
+}
+
+function deleteAddress(id) {
+  var list = readJSON(LGH.addresses, []).filter(function (a) { return a.id !== id; });
+  writeJSON(LGH.addresses, list);
+  renderAddresses();
+  toast('Address deleted', 'info');
+}
+
+function setDefaultAddress(id) {
+  var list = readJSON(LGH.addresses, []).map(function (a) {
+    a.isDefault = a.id === id;
+    return a;
+  });
+  writeJSON(LGH.addresses, list);
+  renderAddresses();
+  toast('Default address updated', 'success');
+}
+
+(function () {
+  if (!getUser()) {
+    window.location.href = 'login.html?redirect=address.html';
+    return;
+  }
+  document.addEventListener('DOMContentLoaded', renderAddresses);
+})();
+
+</script>
+</body>
+</html>

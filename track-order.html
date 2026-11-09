@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Order | Lehgamoh</title>
+<meta name="description" content="Track the delivery status of your Lehgamoh order.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" href="logo.png">
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { brand: '#800000', gold: '#D4AF37' },
+  fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Poppins', 'sans-serif'] }
+} } }
+</script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 flex flex-col min-h-screen">
+
+<div id="navbar-placeholder"></div>
+
+<main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 w-full">
+  <div class="text-center mb-8">
+    <div class="w-16 h-16 rounded-full bg-brand/10 text-brand flex items-center justify-center text-2xl mx-auto mb-4"><i class="fa-solid fa-truck-fast"></i></div>
+    <h1 class="text-3xl md:text-4xl font-serif text-gray-900">Track Your Order</h1>
+    <p class="text-gray-500 text-sm mt-2">Enter your order ID to see where your package is.</p>
+  </div>
+
+  <form id="track-form" onsubmit="trackOrder(event)" class="bg-white rounded-xl shadow-sm p-6 flex flex-col sm:flex-row gap-3 mb-8">
+    <input id="track-id" required type="text" placeholder="e.g. ORD12345678" class="flex-1 border border-gray-300 rounded-lg px-4 py-3 focus:border-brand uppercase">
+    <button type="submit" class="bg-brand text-white px-7 py-3 rounded-lg font-semibold hover:bg-[#5a0000]">Track</button>
+  </form>
+
+  <div id="track-result"></div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+
+var STEPS = ['Order Placed', 'Dispatched', 'Out for Delivery', 'Delivered'];
+
+function trackOrder(event) {
+  event.preventDefault();
+  var id = document.getElementById('track-id').value.trim().toUpperCase();
+  var orders = readJSON(LGH.orders, []);
+  var order = orders.find(function (o) { return o.id.toUpperCase() === id; });
+  var result = document.getElementById('track-result');
+
+  if (!order) {
+    result.innerHTML = '<div class="bg-red-50 border border-red-200 text-red-600 rounded-xl p-5 text-sm"><i class="fa-solid fa-circle-exclamation mr-1"></i> No order found with ID <strong>' + escapeHtml(id) + '</strong>. Please check and try again.</div>';
+    toast('Order not found', 'error');
+    return;
+  }
+
+  var stepIndex = Math.max(0, STEPS.indexOf(order.status === 'Placed' ? 'Order Placed' : order.status));
+  var timeline = STEPS.map(function (step, i) {
+    var done = i <= stepIndex;
+    return '<div class="flex items-start gap-4">' +
+      '<div class="flex flex-col items-center"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs ' + (done ? 'bg-brand text-white' : 'bg-gray-200 text-gray-500') + '">' + (done ? '<i class="fa-solid fa-check"></i>' : (i + 1)) + '</div>' +
+      (i < STEPS.length - 1 ? '<div class="w-0.5 h-10 ' + (i < stepIndex ? 'bg-brand' : 'bg-gray-200') + '"></div>' : '') + '</div>' +
+      '<div class="pb-6"><p class="text-sm font-semibold ' + (done ? 'text-gray-900' : 'text-gray-400') + '">' + step + '</p><p class="text-xs text-gray-400">' + (done ? 'Completed' : 'Pending') + '</p></div>' +
+      '</div>';
+  }).join('');
+
+  result.innerHTML = '<div class="bg-white rounded-xl shadow-sm p-6">' +
+    '<div class="flex flex-wrap justify-between gap-2 pb-4 border-b mb-5"><div><p class="font-serif font-bold text-lg">' + order.id + '</p><p class="text-xs text-gray-500">Placed on ' + order.date + '</p></div><span class="text-xs font-semibold px-3 py-1 rounded-full bg-brand/10 text-brand">' + order.status + '</span></div>' +
+    '<div class="mb-4">' + timeline + '</div>' +
+    '<div class="bg-gray-50 rounded-lg p-4 text-sm"><p class="font-medium mb-1">Delivering to</p><p class="text-gray-500">' + escapeHtml(order.customer.name) + ', ' + escapeHtml(order.customer.city) + ' - ' + escapeHtml(order.customer.pincode) + '</p></div>' +
+    '</div>';
+}
+
+</script>
+</body>
+</html>

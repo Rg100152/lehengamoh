@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Details | Lehgamoh</title>
+<meta name="description" content="View product details, fabric, sizes and pricing at Lehgamoh.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" href="logo.png">
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { brand: '#800000', gold: '#D4AF37' },
+  fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Poppins', 'sans-serif'] }
+} } }
+</script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 flex flex-col min-h-screen">
+
+<div id="navbar-placeholder"></div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+  <nav id="crumb" class="text-xs text-gray-500 mb-6"></nav>
+  <div id="product-detail"></div>
+
+  <section id="related-wrap" class="mt-20 hidden">
+    <div class="text-center mb-10">
+      <h2 class="text-2xl md:text-3xl font-serif text-gray-900">You May Also Like</h2>
+      <div class="h-0.5 w-16 bg-brand mx-auto mt-3"></div>
+    </div>
+    <div id="related-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+  </section>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+
+var currentProductId = null;
+var selectedSize = 'M';
+
+function selectSize(size) {
+  selectedSize = size;
+  document.querySelectorAll('.size-btn').forEach(function (btn) {
+    var active = btn.getAttribute('data-size') === size;
+    btn.classList.toggle('bg-brand', active);
+    btn.classList.toggle('text-white', active);
+    btn.classList.toggle('border-brand', active);
+    btn.classList.toggle('border-gray-300', !active);
+    btn.classList.toggle('text-gray-700', !active);
+  });
+}
+
+function changeDetailQty(delta) {
+  var input = document.getElementById('qty');
+  var next = Math.max(1, Number(input.value) + delta);
+  input.value = next;
+}
+
+function addSelected(buyNow) {
+  if (!currentProductId) return;
+  var qty = Number(document.getElementById('qty').value) || 1;
+  addToCart(currentProductId, selectedSize, qty);
+  if (buyNow) {
+    setTimeout(function () { window.location.href = 'checkout.html'; }, 500);
+  }
+}
+
+function updateDetailWish(id) {
+  toggleWishlist(id);
+  var btn = document.getElementById('detail-wish');
+  if (!btn) return;
+  var active = isInWishlist(id);
+  btn.classList.toggle('text-brand', active);
+  btn.innerHTML = '<i class="' + (active ? 'fa-solid' : 'fa-regular') + ' fa-heart"></i>';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  var id = new URLSearchParams(window.location.search).get('id');
+  var product = getProductById(id);
+  var container = document.getElementById('product-detail');
+  var crumb = document.getElementById('crumb');
+
+  if (!product) {
+    container.innerHTML =
+      '<div class="bg-white rounded-2xl shadow-sm p-12 text-center">' +
+      '<i class="fa-solid fa-triangle-exclamation text-4xl text-brand mb-4"></i>' +
+      '<h2 class="text-2xl font-serif mb-2">Product Not Found</h2>' +
+      '<p class="text-gray-500 mb-6">The product you are looking for does not exist or has been removed.</p>' +
+      '<a href="shop.html" class="inline-block bg-brand text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#5a0000]">Back to Shop</a>' +
+      '</div>';
+    return;
+  }
+
+  currentProductId = product.id;
+  document.title = product.name + ' | Lehgamoh';
+  crumb.innerHTML = '<a href="index.html" class="hover:text-brand">Home</a> / <a href="shop.html" class="hover:text-brand">Shop</a> / <a href="category-' + product.category + '.html" class="hover:text-brand">' + product.categoryLabel + '</a> / <span class="text-gray-700">' + escapeHtml(product.name) + '</span>';
+
+  var sizeButtons = product.sizes.map(function (s) {
+    return '<button type="button" class="size-btn border rounded-lg px-4 py-2 text-sm font-medium border-gray-300 text-gray-700 hover:border-brand transition" data-size="' + s + '" onclick="selectSize(\'' + s + '\')">' + s + '</button>';
+  }).join('');
+
+  var stockBadge = product.inStock
+    ? '<span class="text-emerald-600 text-sm font-medium"><i class="fa-solid fa-circle-check"></i> In Stock</span>'
+    : '<span class="text-red-500 text-sm font-medium"><i class="fa-solid fa-circle-xmark"></i> Out of Stock</span>';
+
+  container.innerHTML =
+    '<div class="bg-white rounded-2xl shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-2">' +
+    '<div class="h-[420px] md:h-auto bg-gray-100">' +
+    '<img src="' + product.image + '" alt="' + escapeHtml(product.name) + '" class="w-full h-full object-cover" onerror="this.src=\'https://via.placeholder.com/600x800?text=Lehgamoh\'">' +
+    '</div>' +
+    '<div class="p-6 md:p-10 flex flex-col justify-center">' +
+    '<p class="text-xs font-bold text-gold uppercase tracking-[0.25em] mb-2">' + product.categoryLabel + '</p>' +
+    '<h1 class="text-3xl md:text-4xl font-serif text-gray-900 mb-3">' + escapeHtml(product.name) + '</h1>' +
+    '<div class="flex items-center gap-3 mb-4 text-sm">' +
+    '<span class="text-amber-500"><i class="fa-solid fa-star"></i> ' + product.rating + '</span>' +
+    '<span class="text-gray-300">|</span>' +
+    stockBadge +
+    '</div>' +
+    '<div class="flex items-end gap-3 mb-5">' +
+    '<span class="text-3xl font-bold text-brand">' + formatPrice(product.price) + '</span>' +
+    '<span class="text-gray-400 line-through">' + formatPrice(product.oldPrice) + '</span>' +
+    '<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">' + product.discount + '% OFF</span>' +
+    '</div>' +
+    '<p class="text-gray-600 leading-relaxed mb-6">' + escapeHtml(product.desc) + '</p>' +
+    '<div class="mb-6">' +
+    '<p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Select Size</p>' +
+    '<div class="flex flex-wrap gap-2">' + sizeButtons + '</div>' +
+    '<a href="size-guide.html" class="inline-block mt-2 text-xs text-brand hover:underline"><i class="fa-solid fa-ruler-combined mr-1"></i> View size guide</a>' +
+    '</div>' +
+    '<div class="flex items-center gap-4 mb-6">' +
+    '<div class="flex items-center border border-gray-300 rounded-lg">' +
+    '<button onclick="changeDetailQty(-1)" class="px-3 py-2 text-gray-600 hover:text-brand">−</button>' +
+    '<input id="qty" type="text" value="1" readonly class="w-10 text-center border-0 focus:outline-none">' +
+    '<button onclick="changeDetailQty(1)" class="px-3 py-2 text-gray-600 hover:text-brand">+</button>' +
+    '</div>' +
+    '<span class="text-xs text-gray-400">Fabric: ' + product.fabric + '</span>' +
+    '</div>' +
+    '<div class="flex flex-col sm:flex-row gap-3">' +
+    '<button onclick="addSelected(false)" ' + (product.inStock ? '' : 'disabled') + ' class="flex-1 bg-gray-900 text-white py-3.5 rounded-lg font-semibold hover:bg-brand transition disabled:opacity-40 disabled:cursor-not-allowed"><i class="fa-solid fa-cart-plus mr-2"></i>' + (product.inStock ? 'Add to Cart' : 'Out of Stock') + '</button>' +
+    '<button onclick="addSelected(true)" ' + (product.inStock ? '' : 'disabled') + ' class="flex-1 bg-gold text-brand py-3.5 rounded-lg font-bold hover:bg-yellow-400 transition disabled:opacity-40">Buy Now</button>' +
+    '<button id="detail-wish" onclick="updateDetailWish(' + product.id + ')" aria-label="Wishlist" class="w-12 h-12 border border-gray-300 rounded-lg flex items-center justify-center text-xl text-gray-600 hover:text-brand"><i class="' + (isInWishlist(product.id) ? 'fa-solid' : 'fa-regular') + ' fa-heart"></i></button>' +
+    '</div>' +
+    '<div class="grid grid-cols-3 gap-3 mt-7 pt-6 border-t text-center text-xs text-gray-500">' +
+    '<div><i class="fa-solid fa-truck-fast text-gold text-lg block mb-1"></i>Free Delivery</div>' +
+    '<div><i class="fa-solid fa-arrow-rotate-left text-gold text-lg block mb-1"></i>7-Day Returns</div>' +
+    '<div><i class="fa-solid fa-lock text-gold text-lg block mb-1"></i>Secure Checkout</div>' +
+    '</div>' +
+    '</div></div>';
+
+  selectSize(product.sizes.indexOf('M') !== -1 ? 'M' : product.sizes[0]);
+
+  var related = products.filter(function (p) {
+    return p.category === product.category && p.id !== product.id;
+  }).slice(0, 4);
+
+  if (related.length) {
+    document.getElementById('related-wrap').classList.remove('hidden');
+    renderProductGrid('related-grid', related);
+  }
+});
+
+</script>
+</body>
+</html>

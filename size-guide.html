@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Size Guide | Lehgamoh</title>
+<meta name="description" content="Find your perfect Lehgamoh fit with our detailed size chart.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" href="logo.png">
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { brand: '#800000', gold: '#D4AF37' },
+  fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Poppins', 'sans-serif'] }
+} } }
+</script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 flex flex-col min-h-screen">
+
+<div id="navbar-placeholder"></div>
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 w-full">
+  <div class="text-center mb-10" data-aos="fade-up">
+    <p class="text-gold tracking-[0.25em] text-xs font-semibold uppercase mb-3">Find Your Fit</p>
+    <h1 class="text-4xl font-serif text-gray-900">Size Guide</h1>
+    <p class="text-gray-500 mt-2 text-sm">All measurements are body measurements in inches.</p>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm overflow-x-auto mb-8" data-aos="fade-up">
+    <table class="w-full text-sm text-left">
+      <thead class="bg-brand text-white">
+        <tr><th class="px-5 py-4">Size</th><th class="px-5 py-4">Bust</th><th class="px-5 py-4">Waist</th><th class="px-5 py-4">Hip</th><th class="px-5 py-4">Shoulder</th></tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        <tr class="hover:bg-gray-50"><td class="px-5 py-3 font-semibold">XS</td><td class="px-5 py-3">32</td><td class="px-5 py-3">26</td><td class="px-5 py-3">34</td><td class="px-5 py-3">14</td></tr>
+        <tr class="hover:bg-gray-50"><td class="px-5 py-3 font-semibold">S</td><td class="px-5 py-3">34</td><td class="px-5 py-3">28</td><td class="px-5 py-3">36</td><td class="px-5 py-3">14.5</td></tr>
+        <tr class="hover:bg-gray-50"><td class="px-5 py-3 font-semibold">M</td><td class="px-5 py-3">36</td><td class="px-5 py-3">30</td><td class="px-5 py-3">38</td><td class="px-5 py-3">15</td></tr>
+        <tr class="hover:bg-gray-50"><td class="px-5 py-3 font-semibold">L</td><td class="px-5 py-3">38</td><td class="px-5 py-3">32</td><td class="px-5 py-3">40</td><td class="px-5 py-3">15.5</td></tr>
+        <tr class="hover:bg-gray-50"><td class="px-5 py-3 font-semibold">XL</td><td class="px-5 py-3">40</td><td class="px-5 py-3">34</td><td class="px-5 py-3">42</td><td class="px-5 py-3">16</td></tr>
+        <tr class="hover:bg-gray-50"><td class="px-5 py-3 font-semibold">XXL</td><td class="px-5 py-3">42</td><td class="px-5 py-3">36</td><td class="px-5 py-3">44</td><td class="px-5 py-3">16.5</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div class="bg-white rounded-xl shadow-sm p-6" data-aos="fade-up">
+      <i class="fa-solid fa-ruler-horizontal text-2xl text-gold mb-3"></i>
+      <h3 class="font-semibold mb-2">Bust</h3>
+      <p class="text-sm text-gray-500">Measure around the fullest part of your bust, keeping the tape parallel to the floor.</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-6" data-aos="fade-up" data-aos-delay="80">
+      <i class="fa-solid fa-ruler-combined text-2xl text-gold mb-3"></i>
+      <h3 class="font-semibold mb-2">Waist</h3>
+      <p class="text-sm text-gray-500">Measure around your natural waistline, the narrowest part of your torso.</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-6" data-aos="fade-up" data-aos-delay="160">
+      <i class="fa-solid fa-arrows-left-right text-2xl text-gold mb-3"></i>
+      <h3 class="font-semibold mb-2">Hip</h3>
+      <p class="text-sm text-gray-500">Stand with feet together and measure around the fullest part of your hips.</p>
+    </div>
+  </div>
+
+  <p class="text-xs text-gray-400 mt-6 text-center">Tip: If you are between two sizes, choose the larger size and get it tailored for a perfect fit.</p>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+
+</script>
+</body>
+</html>

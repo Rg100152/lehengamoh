@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopping Cart | Lehgamoh</title>
+<meta name="description" content="Review the items in your Lehgamoh shopping bag and proceed to checkout.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" href="logo.png">
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { brand: '#800000', gold: '#D4AF37' },
+  fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Poppins', 'sans-serif'] }
+} } }
+</script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 flex flex-col min-h-screen">
+
+<div id="navbar-placeholder"></div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+  <div class="mb-8">
+    <p class="text-xs text-gray-400 mb-2"><a href="index.html" class="hover:text-brand">Home</a> / Cart</p>
+    <h1 class="text-3xl md:text-4xl font-serif text-gray-900">Your Shopping Bag</h1>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div id="cart-items" class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6"></div>
+
+    <aside id="cart-summary" class="hidden bg-white rounded-xl shadow-sm p-6 h-fit sticky top-28">
+      <h2 class="text-lg font-serif font-bold mb-5 pb-3 border-b">Order Summary</h2>
+
+      <div class="flex justify-between text-sm mb-2"><span class="text-gray-600">Subtotal</span><span id="sum-subtotal" class="font-medium">₹0</span></div>
+      <div id="sum-discount-row" class="flex justify-between text-sm mb-2 hidden"><span class="text-gray-600">Coupon (<span id="sum-coupon-label">10%</span>)</span><span id="sum-discount" class="font-medium text-emerald-600">−₹0</span></div>
+      <div class="flex justify-between text-sm mb-4"><span class="text-gray-600">Shipping</span><span id="sum-shipping" class="font-medium">₹0</span></div>
+
+      <div class="border-t pt-3 flex justify-between items-center text-lg font-bold mb-5"><span>Total</span><span id="sum-total" class="text-brand">₹0</span></div>
+
+      <div class="mb-4">
+        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Have a coupon?</label>
+        <div class="flex gap-2">
+          <input id="coupon" type="text" placeholder="Enter code" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm uppercase focus:border-brand">
+          <button onclick="applyCoupon()" class="bg-gray-900 text-white px-4 rounded-lg text-sm hover:bg-brand transition">Apply</button>
+        </div>
+        <p id="coupon-msg" class="text-xs mt-2 text-gray-400">Try code <span class="font-semibold text-brand">LEHGAMOH10</span> for 10% off.</p>
+        <button onclick="removeCoupon()" id="remove-coupon" class="hidden mt-2 text-xs text-red-500 hover:underline">Remove coupon</button>
+      </div>
+
+      <a href="checkout.html" class="block text-center w-full bg-brand text-white py-3.5 rounded-lg font-semibold hover:bg-[#5a0000] transition">Proceed to Checkout</a>
+      <a href="shop.html" class="block text-center w-full mt-2 border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:border-brand hover:text-brand transition">Continue Shopping</a>
+    </aside>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+
+function getCouponRate() {
+  return Number(localStorage.getItem('lehgamoh_coupon') || 0) / 100;
+}
+
+function renderCartPage() {
+  var cart = getCart();
+  var items = document.getElementById('cart-items');
+  var summary = document.getElementById('cart-summary');
+
+  if (!cart.length) {
+    items.innerHTML =
+      '<div class="text-center py-16">' +
+      '<i class="fa-solid fa-bag-shopping text-5xl text-gray-300 mb-4"></i>' +
+      '<p class="text-gray-500 text-lg mb-1">Your shopping bag is empty.</p>' +
+      '<p class="text-gray-400 text-sm mb-6">Looks like you have not added anything yet.</p>' +
+      '<a href="shop.html" class="inline-block bg-brand text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#5a0000]">Start Shopping</a>' +
+      '</div>';
+    summary.classList.add('hidden');
+    return;
+  }
+
+  summary.classList.remove('hidden');
+
+  items.innerHTML = cart.map(function (item, index) {
+    return '<div class="flex gap-4 py-5 border-b last:border-0">' +
+      '<img src="' + item.image + '" alt="' + escapeHtml(item.name) + '" class="w-24 h-32 object-cover rounded-lg" onerror="this.src=\'https://via.placeholder.com/100x130\'">' +
+      '<div class="flex-1 min-w-0">' +
+      '<div class="flex justify-between gap-3">' +
+      '<a href="product.html?id=' + item.id + '" class="font-semibold text-gray-900 hover:text-brand">' + escapeHtml(item.name) + '</a>' +
+      '<button onclick="cartRemove(' + index + ')" class="text-gray-400 hover:text-red-600" aria-label="Remove"><i class="fa-solid fa-trash"></i></button>' +
+      '</div>' +
+      '<p class="text-xs text-gray-500 mt-1">Size: ' + escapeHtml(item.size) + '</p>' +
+      '<p class="text-brand font-bold mt-2">' + formatPrice(item.price) + '</p>' +
+      '<div class="flex items-center justify-between mt-3">' +
+      '<div class="flex items-center border rounded-lg">' +
+      '<button onclick="cartQty(' + index + ',-1)" class="px-3 py-1.5 text-gray-600 hover:text-brand">−</button>' +
+      '<span class="px-3 text-sm">' + item.quantity + '</span>' +
+      '<button onclick="cartQty(' + index + ',1)" class="px-3 py-1.5 text-gray-600 hover:text-brand">+</button>' +
+      '</div>' +
+      '<span class="text-sm font-semibold">' + formatPrice(item.price * item.quantity) + '</span>' +
+      '</div></div></div>';
+  }).join('');
+
+  var subtotal = cartSubtotal();
+  var rate = getCouponRate();
+  var discount = Math.round(subtotal * rate);
+  var shipping = subtotal >= 5000 ? 0 : 199;
+  var total = subtotal - discount + shipping;
+
+  document.getElementById('sum-subtotal').textContent = formatPrice(subtotal);
+  document.getElementById('sum-shipping').textContent = shipping === 0 ? 'FREE' : formatPrice(shipping);
+  document.getElementById('sum-total').textContent = formatPrice(total);
+
+  var discountRow = document.getElementById('sum-discount-row');
+  var removeBtn = document.getElementById('remove-coupon');
+  if (discount > 0) {
+    discountRow.classList.remove('hidden');
+    document.getElementById('sum-discount').textContent = '−' + formatPrice(discount);
+    document.getElementById('sum-coupon-label').textContent = Math.round(rate * 100) + '%';
+    removeBtn.classList.remove('hidden');
+    document.getElementById('coupon').value = 'LEHGAMOH10';
+  } else {
+    discountRow.classList.add('hidden');
+    removeBtn.classList.add('hidden');
+  }
+}
+
+function cartQty(index, delta) {
+  changeQty(index, delta);
+  renderCartPage();
+}
+
+function cartRemove(index) {
+  removeFromCart(index);
+  renderCartPage();
+  toast('Item removed from your bag', 'info');
+}
+
+function applyCoupon() {
+  var code = (document.getElementById('coupon').value || '').trim().toUpperCase();
+  var msg = document.getElementById('coupon-msg');
+  if (code === 'LEHGAMOH10') {
+    localStorage.setItem('lehgamoh_coupon', '10');
+    msg.innerHTML = '<span class="text-emerald-600"><i class="fa-solid fa-circle-check"></i> Coupon applied successfully!</span>';
+    toast('Coupon LEHGAMOH10 applied', 'success');
+    renderCartPage();
+  } else {
+    msg.innerHTML = '<span class="text-red-500">Invalid coupon code. Try LEHGAMOH10.</span>';
+    toast('Invalid coupon code', 'error');
+  }
+}
+
+function removeCoupon() {
+  localStorage.removeItem('lehgamoh_coupon');
+  document.getElementById('coupon').value = '';
+  document.getElementById('coupon-msg').innerHTML = 'Try code <span class="font-semibold text-brand">LEHGAMOH10</span> for 10% off.';
+  renderCartPage();
+  toast('Coupon removed', 'info');
+}
+
+document.addEventListener('DOMContentLoaded', renderCartPage);
+
+</script>
+</body>
+</html>
